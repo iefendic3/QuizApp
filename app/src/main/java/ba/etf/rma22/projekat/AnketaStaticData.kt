@@ -4,16 +4,16 @@ import java.util.*
 
 fun ankete(): List<Anketa>{
     var cal: Calendar = Calendar.getInstance()
-    cal.set(2022,4,4)
+    cal.set(2022,3,4)
     var date1: Date = cal.time;
-    cal.set(2022,4,5)
+    cal.set(2022,3,5)
     var date2: Date = cal.time;
     cal.set(2022,4,5)
     var date3: Date = cal.time;
 
-    cal.set(2022,3,20)
+    cal.set(2022,2,20)
     var date4: Date = cal.time
-    cal.set(2022,3,25)
+    cal.set(2022,2,25)
     var date5: Date = cal.time
 
     cal.set(2022,5,5)
@@ -22,10 +22,10 @@ fun ankete(): List<Anketa>{
     cal.set(2022,5,6)
     var date7: Date=cal.time
 
-    cal.set(2022,3,18)
+    cal.set(2022,2,18)
     var date8: Date=cal.time
 
-    cal.set(2022,3,21)
+    cal.set(2022,2,21)
     var date9: Date=cal.time
 
     return listOf(
@@ -40,9 +40,9 @@ fun ankete(): List<Anketa>{
 }
 fun mojeAnkete(): List<Anketa>{
     var cal: Calendar = Calendar.getInstance()
-    cal.set(2022,3,25)
+    cal.set(2022,2,25)
     var date5: Date = cal.time
-    cal.set(2022,3,21)
+    cal.set(2022,2,21)
     var date9: Date=cal.time
     return listOf(
         Anketa("Anketa 6","Istrazivanje C",date9,date5,date9,5,"Grupa 2c",1f)

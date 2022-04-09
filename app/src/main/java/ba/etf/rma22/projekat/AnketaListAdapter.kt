@@ -36,9 +36,11 @@ class AnketaListAdapter(
         var id: Int = 0
 
 
-        var calendar: Calendar = Calendar.getInstance()
-        calendar.set(2022,4,3)
-        var refDate = calendar.time
+
+        val refDate = Date()
+        val calendar = Calendar.getInstance()
+        calendar.time = refDate
+
         if(refDate.compareTo(ankete[position].datumPocetak) < 0){
             id= context.getResources().getIdentifier("zuta","drawable",context.getPackageName())
             holder.statusAnkete.setImageResource(id)
