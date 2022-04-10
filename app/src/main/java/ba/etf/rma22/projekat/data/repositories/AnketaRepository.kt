@@ -24,7 +24,7 @@ object AnketaRepository {
         return ankete()
     }
     fun getDone() : List<Anketa> {
-        var lista = getAll()
+        var lista = getMyAnkete()
         var novaLista: List<Anketa> = emptyList()
         for(i in lista ){
             if(i.datumRada != null && i.progres==1f) {
@@ -37,7 +37,7 @@ object AnketaRepository {
         var calendar: Calendar = Calendar.getInstance()
         calendar.set(2022,4,3)
         var refDate = calendar.time
-        var lista = getAll()
+        var lista = getMyAnkete()
         var novaLista: List<Anketa> = emptyList()
         for(i in lista ){
             if(refDate.compareTo(i.datumPocetak) < 0) {
@@ -50,7 +50,7 @@ object AnketaRepository {
         var calendar: Calendar = Calendar.getInstance()
         calendar.set(2022,4,3)
         var refDate = calendar.time
-        var lista = getAll()
+        var lista = getMyAnkete()
         var novaLista: List<Anketa> = emptyList()
         for(i in lista ){
             if((refDate.compareTo(i.datumKraj) >0

@@ -3,22 +3,20 @@ package ba.etf.rma22.projekat
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import ba.etf.rma22.projekat.data.models.Istrazivanje
 import ba.etf.rma22.projekat.data.repositories.AnketaRepository
 import ba.etf.rma22.projekat.data.repositories.GrupaRepository
 import ba.etf.rma22.projekat.data.repositories.IstrazivanjeRepository
 
 
 class UpisIstrazivanje : AppCompatActivity(){
-    private lateinit var spinnerAdapter: MySpinnerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.upis_istrazivanje)
-        spinnerAdapter = MySpinnerAdapter(this,0, listOf())
+
 
         val odabirGodina = findViewById<Spinner>(R.id.odabirGodina)
         val odabirIstrazivanja = findViewById<Spinner>(R.id.odabirIstrazivanja)
@@ -45,6 +43,7 @@ class UpisIstrazivanje : AppCompatActivity(){
                 val selectedItem = odabirGodina.getSelectedItem().toString()
                 var lista = listOf<String>()
                 var lista2 = listOf<Istrazivanje>()
+
                 if(selectedItem != "Odabir godine") {
                     upisiMe.isEnabled = true
                     upisiMe.isClickable = true
@@ -52,6 +51,7 @@ class UpisIstrazivanje : AppCompatActivity(){
                     lista2 =
                         IstrazivanjeRepository.getIstrazivanjeByGodina(Integer.parseInt(selectedItem))
                     for (i in lista2) {
+
                         lista = lista + i.naziv
                     }
                     val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -82,7 +82,9 @@ class UpisIstrazivanje : AppCompatActivity(){
                 val selectedItem = odabirIstrazivanja.getSelectedItem().toString()
                     var lista = listOf<String>()
                     var lista2 = GrupaRepository.getGroupsByIstrazivanje(selectedItem)
+
                     for (i in lista2) {
+
                         lista = lista + i.naziv
                     }
                     val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
@@ -97,22 +99,31 @@ class UpisIstrazivanje : AppCompatActivity(){
 
         upisiMe.setOnClickListener {
             var lista = AnketaRepository.getAll()
+
             for(i in lista) {
-                if (odabirIstrazivanja.selectedItem ==i.nazivIstrazivanja && odabirGrupa.selectedItem == i.nazivGrupe){
-                     AnketaRepository.addMyAnketu(i)
 
-                    IstrazivanjeRepository.dodajUpisani(Istrazivanje(odabirIstrazivanja.selectedItem.toString(),
-                        Integer.parseInt(odabirGodina.selectedItem.toString())))
+                if (odabirIstrazivanja.selectedItem ==i.nazivIstrazivanja && odabirGrupa.selectedItem == i.nazivGrupe
+                    ){
 
-                    val intent1 = Intent(this@UpisIstrazivanje, MainActivity::class.java)
-                    intent1.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or
-                            Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent1)
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+
+                    if(IstrazivanjeRepository.dodajUpisani(
+                        Istrazivanje(odabirIstrazivanja.selectedItem.toString(),
+                        Integer.parseInt(odabirGodina.selectedItem.toString()))
+                    ) ){
+                        AnketaRepository.addMyAnketu(i)
+                    }
+                    else{
+                        Toast.makeText(applicationContext,"Već ste upisani u grupu za ovo istraživanje", Toast.LENGTH_LONG).show()
+                    }
 
                 }
+                val intent1 = Intent(this@UpisIstrazivanje, MainActivity::class.java)
+                intent1.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK or
+                        Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent1)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             }
 
         }

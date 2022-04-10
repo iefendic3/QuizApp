@@ -24,18 +24,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="30dp"
+
         android:clipToPadding="false"
 
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingBottom="80dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filterAnketa"
-        app:layout_constraintVertical_bias="0.094" />
+        app:layout_constraintTop_toBottomOf="@+id/filterAnketa" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/upisDugme"
