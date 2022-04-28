@@ -8,14 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import ba.etf.rma22.projekat.data.models.Anketa
+import ba.etf.rma22.projekat.data.repositories.PitanjeAnketaRepository
 
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AnketaListAdapter(
-    private var ankete: List<Anketa>
+    private var ankete: List<Anketa>,
+    private val onItemClicked: (anketa:Anketa) -> Unit
 ) : RecyclerView.Adapter<AnketaListAdapter.AnketaViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnketaViewHolder {
         val view = LayoutInflater
@@ -29,7 +34,28 @@ class AnketaListAdapter(
         holder.nazivIstrazivanja.text=ankete[position].nazivIstrazivanja
         holder.progressBar.setProgress((ankete[position].progres * 100.0f).toInt())
         holder.progressBar.getProgressDrawable().setColorFilter(
-            Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
+            Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.itemView.setOnClickListener{
+            onItemClicked(ankete[position])
+        }
+        /*holder.itemView.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(v: View?) {
+                val activity = v!!.context as AppCompatActivity
+                val fragmentPitanje = FragmentPitanje()
+                val fragmentPredaj = FragmentPredaj()
+                val pitanja = PitanjeAnketaRepository.getPitanja("Anketa 1","Istrazivanje A")
+                var brojac = 0
+                for(i in pitanja){
+                    if(brojac == 0)
+                    adapter.refreshFragment(brojac,FragmentPitanje())
+                    else
+                    adapter.add(brojac,FragmentPitanje())
+                    brojac++
+                }
+
+                   adapter.refreshFragment(adapter.itemCount - 1, fragmentPredaj)
+
+        }})*/
 
         //Pronalazimo id drawable elementa na osnovu naziva žanra
         val context: Context = holder.statusAnkete.getContext()
