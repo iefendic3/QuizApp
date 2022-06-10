@@ -31,8 +31,8 @@ class AnketaListAdapter(
     override fun getItemCount(): Int = ankete.size
     override fun onBindViewHolder(holder: AnketaViewHolder, position: Int) {
         holder.nazivAnkete.text=ankete[position].naziv
-        holder.nazivIstrazivanja.text=ankete[position].nazivIstrazivanja
-        holder.progressBar.setProgress((ankete[position].progres * 100.0f).toInt())
+        //holder.nazivIstrazivanja.text=ankete[position].nazivIstrazivanja
+        //holder.progressBar.setProgress((ankete[position].progres * 100.0f).toInt())
         holder.progressBar.getProgressDrawable().setColorFilter(
             Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN)
         holder.itemView.setOnClickListener{
@@ -73,7 +73,7 @@ class AnketaListAdapter(
             calendar.time = ankete[position].datumPocetak
             holder.datum.text = "Datum početka ankete: "+calendar.get(Calendar.DAY_OF_MONTH)+". "+calendar.get(Calendar.MONTH)+". "+calendar.get(Calendar.YEAR)
         }
-        else if(refDate.compareTo(ankete[position].datumPocetak)>=0
+       /* else if(refDate.compareTo(ankete[position].datumPocetak)>=0
             && refDate.compareTo(ankete[position].datumKraj)<0
             && ankete[position].datumRada==null){
             id= context.getResources().getIdentifier("zelena","drawable",context.getPackageName())
@@ -81,16 +81,16 @@ class AnketaListAdapter(
             calendar.time = ankete[position].datumKraj
             holder.datum.text = "Datum kraja ankete: "+calendar.get(Calendar.DAY_OF_MONTH)+". "+calendar.get(Calendar.MONTH)+". "+calendar.get(Calendar.YEAR)
 
-        }
-        else if(refDate.compareTo(ankete[position].datumPocetak)>=0
+        }*/
+       /* else if(refDate.compareTo(ankete[position].datumPocetak)>=0
             && ankete[position].datumRada!=null && ankete[position].progres==1f){
             id= context.getResources().getIdentifier("plava","drawable",context.getPackageName())
             holder.statusAnkete.setImageResource(id)
             calendar.time= ankete[position].datumRada
             holder.datum.text = "Datum kada je anketa urađena: "+calendar.get(Calendar.DAY_OF_MONTH)+". "+calendar.get(Calendar.MONTH)+". "+calendar.get(Calendar.YEAR)
 
-        }
-        else if((refDate.compareTo(ankete[position].datumKraj) >0
+        }*/
+        /*else if((refDate.compareTo(ankete[position].datumKraj) >0
             && ankete[position].datumRada == null) || (refDate.compareTo(ankete[position].datumKraj) >0
                     && ankete[position].datumRada != null && ankete[position].progres<1f)){
             id= context.getResources().getIdentifier("crvena","drawable",context.getPackageName())
@@ -98,7 +98,7 @@ class AnketaListAdapter(
             calendar.time = ankete[position].datumKraj
             holder.datum.text = "Datum kraja ankete: "+calendar.get(Calendar.DAY_OF_MONTH)+". "+calendar.get(Calendar.MONTH)+". "+calendar.get(Calendar.YEAR)
 
-        }
+        }*/
     }
 
     fun updateAnkete(ankete: List<Anketa>) {

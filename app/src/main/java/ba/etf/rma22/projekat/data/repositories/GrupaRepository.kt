@@ -7,10 +7,10 @@ object GrupaRepository {
     fun getGroupsByIstrazivanje(nazivIstrazivanja:String) : List<Grupa> {
         var lista = grupe()
         var novaLista: List<Grupa> = emptyList()
-        for(i in lista){
+       /* for(i in lista){
             if(i.nazivIstrazivanja == nazivIstrazivanja)
                 novaLista = novaLista + i
-        }
+        }*/
         return novaLista
     }
 

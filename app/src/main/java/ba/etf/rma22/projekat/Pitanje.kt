@@ -1,7 +1,10 @@
 package ba.etf.rma22.projekat
 
+import com.google.gson.annotations.SerializedName
+
 data class Pitanje (
-    val naziv: String, //jedinstveni naziv pitanja u okviru ankete u kojoj se nalazi
-    val tekst: String, //tekst pitanja
-    val opcije: List<String> //lista ponuđenih odgovora
+    @SerializedName("id") val id: Int,
+    @SerializedName("naziv") val naziv: String,
+    @SerializedName("tekstPitanja") val tekstPitanja: String,
+    @SerializedName("opcije") val opcije: List<String>
 )

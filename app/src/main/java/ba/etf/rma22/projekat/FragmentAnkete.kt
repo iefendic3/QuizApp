@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,6 +30,16 @@ class FragmentAnkete : Fragment() {
     private lateinit var listaAnketa: RecyclerView
     private lateinit var listaAnketaAdapter: AnketaListAdapter
     private var anketaListViewModel =  AnketaListViewModel()
+
+    fun onSuccess(ankete:List<Anketa>){
+        val toast = Toast.makeText(context, "Ankete pronađene", Toast.LENGTH_SHORT)
+        toast.show()
+        listaAnketaAdapter.updateAnkete(ankete)
+    }
+    fun onError() {
+        val toast = Toast.makeText(context, "Error", Toast.LENGTH_SHORT)
+        toast.show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,10 +88,13 @@ class FragmentAnkete : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedItem = parent?.getItemAtPosition(position).toString()
                 if (selectedItem == "Sve ankete") {
-                    lista = AnketaRepository.getAll()
-                    listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
+                     anketaListViewModel.getAll(
+                        onSuccess = ::onSuccess,
+                        onError = ::onError
+                    )
+                    //listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
                 }
-                else if(selectedItem=="Urađene ankete"){
+               /* else if(selectedItem=="Urađene ankete"){
                     lista = AnketaRepository.getDone()
                     listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
                 }
@@ -91,10 +105,14 @@ class FragmentAnkete : Fragment() {
                 else if(selectedItem=="Prošle ankete"){
                     lista = AnketaRepository.getNotTaken()
                     listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
-                }
+                }*/
                 else {
-                    lista = AnketaRepository.getMyAnkete()
-                    listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
+                    anketaListViewModel.getUpisane(
+                        onSuccess = ::onSuccess,
+                        onError = ::onError
+                    )
+//                    lista = AnketaRepository.getMyAnkete()
+//                    listaAnketaAdapter.updateAnkete(lista.sortedWith(compareBy { it.component3() }))
                 }
             }
 
@@ -103,7 +121,7 @@ class FragmentAnkete : Fragment() {
         return view
     }
     private fun showPitanja(anketa: Anketa){
-        if(AnketaRepository.getMyAnkete().contains(anketa)) {
+        /*if(AnketaRepository.getMyAnkete().contains(anketa)) {
             var pitanja = PitanjeAnketaRepository.getPitanja(anketa.naziv, anketa.nazivIstrazivanja)
 
 
@@ -124,7 +142,7 @@ class FragmentAnkete : Fragment() {
             }
             listaPitanja = listaPitanja + FragmentPredaj()
             adapter.addFragments(listaPitanja)
-        }
+        }*/
     }
     override fun onResume() {
         super.onResume()

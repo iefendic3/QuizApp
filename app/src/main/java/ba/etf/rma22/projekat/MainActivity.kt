@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import ba.etf.rma22.projekat.data.repositories.ApiConfig
+import ba.etf.rma22.projekat.data.repositories.IstrazivanjeIGrupaRepository
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +22,9 @@ class MainActivity : AppCompatActivity() {
 
         viewPager.adapter = adapter
 
+
     }
+
 
 }
 

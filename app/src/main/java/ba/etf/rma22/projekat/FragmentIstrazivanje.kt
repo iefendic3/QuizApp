@@ -111,9 +111,9 @@ class FragmentIstrazivanje : Fragment() {
         }
 
         upisiMe.setOnClickListener {
-            var lista = AnketaRepository.getAll()
+            //var lista = AnketaRepository.getAll()
 
-            for(i in lista) {
+            /*for(i in lista) {
 
                 if (odabirIstrazivanja.selectedItem ==i.nazivIstrazivanja && odabirGrupa.selectedItem == i.nazivGrupe
                 ){
@@ -145,7 +145,7 @@ class FragmentIstrazivanje : Fragment() {
                 startActivity(intent1)
                 val intent = Intent(activity, FragmentAnkete::class.java)
                 startActivity(intent)*/
-            }
+            }*/
 
         }
         return view

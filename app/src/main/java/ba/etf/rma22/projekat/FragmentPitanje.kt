@@ -27,7 +27,7 @@ class FragmentPitanje : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_pitanje, container, false)
-        val pitanja = PitanjeAnketaRepository.getPitanja("Anketa 1", "Istrazivanje A")
+
 
 
         var tekstPitanja = view.findViewById<TextView>(R.id.tekstPitanja)
