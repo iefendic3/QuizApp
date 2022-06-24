@@ -1,18 +1,45 @@
 package ba.etf.rma22.projekat.data.repositories
 
-object AccountRepository {
-    var acHash: String = "846c0a86-7dd2-4449-833c-24f412d48f55"
-    fun postaviHash(acHash1:String):Boolean{
-        acHash = acHash1
-        if(acHash != null)
-        return true
+import android.annotation.SuppressLint
+import android.content.Context
+import ba.etf.rma22.projekat.data.models.RMA22DB
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-        return false
+@SuppressLint("StaticFieldLeak")
+
+object AccountRepository {
+
+    private lateinit var context: Context
+    fun setContext(cont: Context) {
+        context = cont
     }
-    //postavlja (lokalno, ne putem web servisa) hash studenta koji će biti korišten u drugim repozitorijima,
-// vraća true ukoliko je hash postavljen, false inače
-    fun getHash():String{
+
+    var acHash : String = "846c0a86-7dd2-4449-833c-24f412d48f55"
+
+    suspend fun postaviHash(accHash: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            var db = RMA22DB.getInstance(context)
+            var hashDB = db.accountDao().getHash()
+            if(accHash != hashDB) {
+                if(hashDB!=null) {
+                    ApiConfig.retrofit.obrisiKorisnikaById(hashDB)
+                }
+                db.accountDao().izbrisiSve()
+                db.grupaDao().izbrisiSve()
+                db.anketaDao().izbrisiSve()
+                db.anketaTakenDao().izbrisiSve()
+                db.pitanjeDao().izbrisiSve()
+                db.odgovorDao().izbrisiSve()
+                db.istrazivanjeDao().izbrisiSve()
+                db.accountDao().upisi(accHash)
+                acHash = accHash
+            }
+            return@withContext true
+        }
+    }
+
+    fun getHash():String {
         return acHash
     }
-    //vraća hash studenta koji je postavljen
 }

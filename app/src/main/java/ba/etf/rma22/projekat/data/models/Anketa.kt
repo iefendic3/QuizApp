@@ -1,26 +1,22 @@
 package ba.etf.rma22.projekat.data.models
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
+@Entity
 data class Anketa(
-    /*val naziv: String,
-    val nazivIstrazivanja: String,
-    val datumPocetak: Date,
-    val datumKraj: Date,
-    val datumRada: Date?,
-    val trajanje: Int,
-    val nazivGrupe: String,
-    val progres: Float*/
-    @SerializedName("id") val id: Int,
-    @SerializedName("naziv") val naziv: String,
-    @SerializedName("datumPocetak") val datumPocetak: Date,
-    @SerializedName("datumKraj") val datumKraj: Date,
-    @SerializedName("trajanje") val trajanje: Int
-) : Comparable<Anketa> {
+    @PrimaryKey @SerializedName("id") val id : Int,
+    @ColumnInfo(name = "naziv") @SerializedName("naziv") val naziv: String,
+    @ColumnInfo(name = "datumPocetak") @SerializedName("datumPocetak") val datumPocetak: Date,
+    @ColumnInfo(name = "datumKraj") @SerializedName("datumKraj") var datumKraj: Date?,
+    @ColumnInfo(name = "trajanje") @SerializedName("trajanje") val trajanje: Int
+) : Comparable<Anketa>{
     override fun compareTo(other: Anketa): Int {
-        if(other.datumPocetak>this.datumPocetak) return -1
-        else if(other.datumPocetak==this.datumPocetak) return 0
-        return 1
+        if(this.datumPocetak<other.datumPocetak) return -1
+        else if(this.datumPocetak==other.datumPocetak) return 0
+        else return 1
     }
 }

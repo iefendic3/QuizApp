@@ -1,86 +1,104 @@
 package ba.etf.rma22.projekat.data.repositories
 
-import ba.etf.rma22.projekat.GetOdgovorBodoviResponse
-import ba.etf.rma22.projekat.Odgovor
+import android.annotation.SuppressLint
+import android.content.Context
+import ba.etf.rma22.projekat.data.models.Odgovor
+import ba.etf.rma22.projekat.data.models.OdgovorPitanjeBodovi
+import ba.etf.rma22.projekat.data.models.RMA22DB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
+@SuppressLint("StaticFieldLeak")
+
 object OdgovorRepository {
 
-    suspend fun getOdgovoriAnketa(idAnkete:Int):List<Odgovor> {
+    private lateinit var context: Context
+    fun setContext(cont: Context) {
+        context = cont
+    }
 
+    suspend fun getOdgovoriAnketa(anketaId : Int) : List<Odgovor>{
         return withContext(Dispatchers.IO) {
-            var listaPokusaja = ApiConfig.retrofit.getPoceteAnkete(AccountRepository.getHash())
-            var lista = listaPokusaja?.body()
-            var idPokusaja: Int = -1
-            for(i in lista!!)
-                if(i.AnketumId==idAnkete){
-                    idPokusaja = i.id
+            var resp = ApiConfig.retrofit.getPoceteAnkete(AccountRepository.getHash())
+            val respBody = resp.body()
+            var id = -1
+            for(anketaTaken in respBody!!){
+                if(anketaTaken.AnketumId==anketaId){
+                    id = anketaTaken.id
                 }
-
-            var response = ApiConfig.retrofit.getOdgovoriById(AccountRepository.getHash(),idPokusaja)
+            }
+            var response = ApiConfig.retrofit.getOdgovoriById(AccountRepository.getHash(),id)
             val responseBody = response.body()
+
             return@withContext responseBody!!
         }
-
     }
-    //vraća listu odgovora za anketu, praznu listu ako student nije odgovarao ili nije upisan na zadanu anketu
 
-    suspend fun postaviOdgovorAnketa(idAnketaTaken:Int,idPitanje:Int,odgovor:Int):Int
-    {
-        try {
-            return withContext(Dispatchers.IO) {
-
-                var pokusaji = ApiConfig.retrofit.getPoceteAnkete(AccountRepository.getHash())
-                var id = 0
-                for(i in pokusaji?.body()!!){
-                    if(i.id == idAnketaTaken) {
-                        id = i.AnketumId
-                        break
-                    }
+    suspend fun postaviOdgovorAnketa(idAnketaTaken:Int,idPitanje:Int,odgovor:Int) : Int{
+        return withContext(Dispatchers.IO) {
+            val resp = ApiConfig.retrofit.getPoceteAnkete(AccountRepository.getHash())
+            val respBody = resp.body()
+            var idAnkete : Int = -1
+            for(anketaTaken in respBody!!){
+                if(anketaTaken.id==idAnketaTaken){
+                    idAnkete=anketaTaken.AnketumId
+                    break
                 }
-                var pitanja = ApiConfig.retrofit.getPitanjaByAnketaId(id)
-                var pitanjaBody = pitanja.body()
-
-                var odgovori = ApiConfig.retrofit.getOdgovoriById(AccountRepository.getHash(),idAnketaTaken)
-                var odgovoriBody = odgovori.body()
-
-                val odgovorPitanje = (odgovoriBody!!.size+1).toFloat()/pitanjaBody!!.size.toFloat()
-                val progres = izracunajProgres((odgovorPitanje*100).roundToInt())
-                val bodovi = GetOdgovorBodoviResponse(odgovor,idPitanje,progres)
-
-                var response = ApiConfig.retrofit.dodajOdgovorById(AccountRepository.getHash(),idAnketaTaken,bodovi)
-                val responseBody = response.body()
-
-                return@withContext bodovi.progres
             }
-        } catch(e: Exception){
-            return -1
+
+            val resp2 = ApiConfig.retrofit.getPitanjaByAnketaId(idAnkete)
+            val respBody2 = resp2.body()
+            val brojPitanja = respBody2!!.size
+
+            val resp3 = ApiConfig.retrofit.getOdgovoriById(AccountRepository.getHash(),idAnketaTaken)
+            val respBody3 = resp3.body()
+            val brojOdgovora = respBody3!!.size + 1
+
+            val temp: Float = brojOdgovora.toFloat() / brojPitanja.toFloat()
+            val progress = odrediPostotak((temp * 100).roundToInt())
+            val odgovorPitanjeBodovi = OdgovorPitanjeBodovi(odgovor, idPitanje, progress)
+
+            val response = ApiConfig.retrofit.dodajOdgovorById(AccountRepository.getHash(),idAnketaTaken,odgovorPitanjeBodovi)
+            val responseBody = response.body()
+            if(responseBody==null){
+                return@withContext -1
+            }
+            val db = RMA22DB.getInstance(context)
+            var temp2 = true
+            for(odg in db.odgovorDao().getAll()){
+                if(odg.pitanjeId==idPitanje){
+                    temp2 = false
+                }
+            }
+            if(temp2) {
+
+            }
+
+            return@withContext odgovorPitanjeBodovi.progres
         }
     }
-    //funkcija postavlja odgovor sa indeksom odgovor na pitanje sa id-em idPitanje u okviru pokušaja sa id-em idAnketaTaken.
-// Funkcija vraća progres (0-100) na anketi nakon odgovora ili -1 ukoliko ima neka greška u zahtjevu
-    private fun izracunajProgres(odgovorPitanje: Int): Int{
-        var x = odgovorPitanje
-        if(x >= 90 && x <= 100){
-            x = 100
+
+    private fun odrediPostotak(x : Int) : Int {
+        var temp = x
+        if(temp >= 0 && temp<=9){
+            temp = 0
         }
-        else if(x>=70 && x<=89){
-            x=80
+        else if(temp>=10 && temp<=29){
+            temp=20
         }
-        else if(x>=50 && x<=69){
-            x=60
+        else if(temp>=30 && temp<=49){
+            temp=40
         }
-        else if(x>=30 && x<=59){
-            x=40
+        else if(temp>=50 && temp<=69){
+            temp=60
         }
-        else if(x>=10 && x<=29){
-            x=20
+        else if(temp>=70 && temp<=89){
+            temp = 80
         }
-        else if(x>=0 && x<=9){
-            x=0
+        else if(temp>=90 && temp<=100){
+            temp = 100
         }
-        return x
+        return temp
     }
 }

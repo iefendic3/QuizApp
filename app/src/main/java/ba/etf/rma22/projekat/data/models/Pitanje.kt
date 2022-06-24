@@ -6,8 +6,10 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class Grupa(
+data class Pitanje(
     @PrimaryKey @SerializedName("id") val id : Int,
     @ColumnInfo(name = "naziv") @SerializedName("naziv") val naziv : String,
-    @ColumnInfo(name = "IstrazivanjeId") @SerializedName("IstrazivanjeId") val istrazivanjeId : Int
+    @ColumnInfo(name = "tekstPitanja") @SerializedName("tekstPitanja") val tekstPitanja : String,
+    @ColumnInfo(name = "opcije") @SerializedName("opcije") val opcije : List<String>,
+    @ColumnInfo(name = "anketaId") val anketaId : Int
 )
